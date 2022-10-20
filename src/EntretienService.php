@@ -17,6 +17,10 @@ class EntretienService
 
     public function planifier(Candidat $candidat, $disponibiliteCandidat, Recruteur $recruteur, $disponibiliteRecruteur)
     {
-        return false;
+        $this->entretienRepository->save(new Entretien($candidat->getEmail(), $recruteur->getEmail(), $disponibiliteRecruteur));
+
+        $this->emailService->sendToRecruteur($recruteur->getEmail());
+        $this->emailService->sendToCandidat($candidat->getEmail());
+        return true;
     }
 }
