@@ -3,11 +3,11 @@
 use Behat\Behat\Context\Context;
 use Kata\Candidat;
 use Kata\EmailService;
-use Kata\Entretien;
 use Kata\EntretienRepository;
 use Kata\EntretienService;
 use Kata\Recruteur;
 use function PHPUnit\Framework\assertEquals;
+use function PHPUnit\Framework\assertFalse;
 use function PHPUnit\Framework\assertTrue;
 
 /**
@@ -95,6 +95,28 @@ class FeatureContext implements Context
             ->with("candidat@email.com")->once();
         $this->emailService->shouldhaveReceived('sendToRecruteur')
             ->with("recruteur@soat.fr")->once();
+    }
+
+    /**
+     * @When /^L’entretien n'est pas planifié$/
+     */
+    public function lEntretienNEstPasPlanifié()
+    {
+        $this->entretienRepository->shouldNotHaveReceived('save');
+
+        $all = $this->entretienRepository->findAll();
+        assertEquals(0, count($all));
+
+        assertFalse($this->resultatPlanification);
+    }
+
+    /**
+     * @When /^aucun mail de confirmation n'est envoyé au candidat ou au recruteur$/
+     */
+    public function aucunMailDeConfirmationNEstEnvoyéAuCandidatOuAuRecruteur()
+    {
+        $this->emailService->shouldNotHaveReceived('sendToCandidat');
+        $this->emailService->shouldNotHaveReceived('sendToRecruteur');
     }
 
 }
