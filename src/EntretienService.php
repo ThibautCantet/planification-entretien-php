@@ -17,7 +17,8 @@ class EntretienService
 
     public function planifier(Candidat $candidat, $disponibiliteCandidat, Recruteur $recruteur, $disponibiliteRecruteur)
     {
-        if ($disponibiliteCandidat != $disponibiliteRecruteur) {
+        if ($disponibiliteCandidat != $disponibiliteRecruteur ||
+            $candidat->getTechno() != $recruteur->getTechno()) {
             return false;
         }
         $this->entretienRepository->save(new Entretien($candidat->getEmail(), $recruteur->getEmail(), $disponibiliteRecruteur));
